@@ -138,7 +138,7 @@ EOF
 chmod 600 "$NETPLAN_FILE"
 
     # Apply configuration
-    netplan generate || report_error_exit "Netplan generation failed."
+    # netplan generate || report_error_exit "Netplan generation failed."
     netplan apply || report_error_exit "Netplan application failed. Check interface name and network settings."
 
     # Verify the change
