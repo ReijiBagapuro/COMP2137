@@ -8,6 +8,7 @@ TARGET_HOSTNAME="server1"
 NETPLAN_DIR="/etc/netplan"
 NETPLAN_FILE="$NETPLAN_DIR/99-static-config.yaml"
 TARGET_SOFTWARE=("apache2" "squid")
+FIXED_INTERFACE_NAME="eth0"
 
 USER_LIST=(
     "dennis:sudo"
@@ -29,7 +30,7 @@ DENNIS_EXTERNAL_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG4rT3vTt99Ox5kndS4HmgT
 
 report_start() {
     echo -e "\n========================================================"
-    echo -e "   🚀 Starting System Configuration Script ($0)"
+    echo -e "   🚀 Starting System Configuration Script"
     echo -e "========================================================"
     START_TIME=$(date +%s)
 }
@@ -80,7 +81,7 @@ find_target_interface() {
     # Check if the target IP is already configured on any interface
     if ip a | grep -q "$TARGET_IP/$TARGET_CIDR"; then
         INTERFACE=$(ip a | grep "$TARGET_IP/$TARGET_CIDR" | awk '{print $NF}')
-        report_status PASS "Target IP ($TARGET_NET) already set on interface: $INTERFACE"
+        report_status PASS "Target IP $TARGET_NET already set on interface: $INTERFACE"
         echo "$INTERFACE" # Return the interface name
         return 0
     fi
@@ -94,7 +95,7 @@ find_target_interface() {
     # Since the assignment is on a controlled VM environment, we will look for a device that is UP
     # but has no primary IPv4 address, and assume it's the one we need to configure.
 
-    UNCONFIGURED_DEVICES=$(ip -o link show | awk -F': ' '/UP/{print $2}' | grep -v 'lo')
+    UNCONFIGURED_DEVICES=$(ip -o link show | awk -F': ' '/UP/{print $2}' | grep -v 'lo' | grep -o "eth0")
     
     for IFACE in $UNCONFIGURED_DEVICES; do
         if ! ip a show dev "$IFACE" | grep -q "inet "; then
@@ -111,16 +112,15 @@ find_target_interface() {
 }
    # --- Task 1: Network Configuration (Netplan) ---
 configure_netplan() {
-    report_section "1. Network Configuration (Netplan)"
+    report_section "1. Network Configuration Netplan"
 
-    INTERFACE_NAME=$(find_target_interface) # This function must be fixed to return 'eth0'
+    INTERFACE_NAME="$FIXED_INTERFACE_NAME"
 
     # Check if the desired configuration already exists
     if [ -f "$NETPLAN_FILE" ] && grep -q "$TARGET_NET" "$NETPLAN_FILE" && grep -q "$INTERFACE_NAME" "$NETPLAN_FILE"; then
         report_status PASS "Netplan configuration already correctly defined in $NETPLAN_FILE."
         return 0
     fi
-
     report_status APPLY "Applying static IP $TARGET_NET to interface $INTERFACE_NAME via $NETPLAN_FILE..."
 
     # Create the new Netplan configuration file (99-static-config.yaml) 
@@ -133,6 +133,9 @@ network:
       dhcp4: false
       addresses: [$TARGET_NET]
 EOF
+
+# NEW LINE: Fix the "Permissions too open" error permanently
+chmod 600 "$NETPLAN_FILE"
 
     # Apply configuration
     netplan generate || report_error_exit "Netplan generation failed."
@@ -303,7 +306,7 @@ report_start
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]; then
-    report_error_exit "Please run this script with 'sudo' or as root."
+    report_error_exit "Please run this script with sudo or as root."
 fi
 
 # Run all tasks sequentially

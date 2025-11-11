@@ -1,0 +1,62 @@
+---Host/Student info----
+
+Running on Mon Nov 10 11:25:51 PM EST 2025
+Run by reiji - () on host
+ Static hostname: generic-vm
+      Machine ID: db7c3b9a1bb14b42b54cfc628743d478
+Operating System: Ubuntu 24.04.3 LTS
+a98742121b14ebe6350c4bf8245d0062  ./check-assign2-script.sh - a98742121b14ebe6350c4bf8245d0062  -
+------------------------
+
+---Start of Assignment2.sh Check------
+---Running makecontainers.sh----------
+This script performs many tasks. Please be patient
+To see more about what it is doing as it does it, use the --verbose option
+You may ignore any messages about Open vSwitch or dpkg-preconfigure being unable to re-open stdin
+DO NOT use control-Z when this script is running.
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
+please let the script finish
